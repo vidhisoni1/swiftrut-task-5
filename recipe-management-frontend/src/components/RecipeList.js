@@ -77,7 +77,7 @@ const RecipeList = () => {
                             <div className="card h-100">
                                 {recipe.image && (
                                     <img
-                                        src={`http://localhost:5000/${recipe.image}`}
+                                        src={`https://swiftrut-task-5.onrender.com/${recipe.image}`}
                                         alt={recipe.title}
                                         className="card-img-top"
                                         style={{ height: '200px', objectFit: 'cover' }}

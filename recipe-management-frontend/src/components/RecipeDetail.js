@@ -21,7 +21,7 @@ const RecipeDetail = () => {
     <div className="container my-5">
       {recipe.image && (
         <img
-          src={`http://localhost:5000/${recipe.image}`}
+          src={`https://swiftrut-task-5.onrender.com/${recipe.image}`}
           alt={recipe.title}
           className="img-fluid rounded mb-4"
           style={{ height: '400px', objectFit: 'cover', width: '100%' }}
