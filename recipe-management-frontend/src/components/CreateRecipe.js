@@ -1,109 +1,114 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { createRecipe } from '../services/recipeService';
 
 const CreateRecipe = () => {
-  const [recipe, setRecipe] = useState({
-    title: '',
-    ingredients: '',
-    instructions: '',
-    cuisine: '',
-    cookingTime: ''
-  });
-  const navigate = useNavigate();
+  const [title, setTitle] = useState('');
+  const [ingredients, setIngredients] = useState('');
+  const [instructions, setInstructions] = useState('');
+  const [cuisineType, setCuisineType] = useState('');
+  const [cookingTime, setCookingTime] = useState('');
+  const [image, setImage] = useState(null);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Use navigate to redirect after creation
 
-  const createRecipe = async (recipeData) => {
-    const token = localStorage.getItem('token');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('ingredients', ingredients.split(','));
+    formData.append('instructions', instructions);
+    formData.append('cuisineType', cuisineType);
+    formData.append('cookingTime', cookingTime);
+    formData.append('image', image);
+
     try {
-      await axios.post('http://localhost:5000/api/recipes', recipeData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      navigate('/');
-    } catch (error) {
-      console.error('Error creating recipe:', error);
+      await createRecipe(formData);
+      navigate('/my-recipes'); // Redirect to MyRecipes after successful creation
+    } catch (err) {
+      setError('Error creating recipe');
+      console.error(err);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    createRecipe({
-      title: recipe.title,
-      ingredients: recipe.ingredients.split(','),
-      instructions: recipe.instructions,
-      cuisine: recipe.cuisine,
-      cookingTime: recipe.cookingTime,
-    });
-  };
-
-  const handleChange = (e) => {
-    setRecipe({
-      ...recipe,
-      [e.target.name]: e.target.value
-    });
-  };
-
   return (
-    <div className="card p-4">
-      <h2>Create a New Recipe</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="container my-5 ">
+      <div className='col-6 mx-auto'>
+      <h1 className="mb-4 text-center text-secondary">Create Recipe</h1>
+      {error && <p className="text-danger text-center text-secondary">{error}</p>}
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="mb-3">
-          <label className="form-label">Title</label>
+          <label className="form-label text-secondary">Title</label>
           <input
             type="text"
-            className="form-control"
-            name="title"
-            value={recipe.title}
-            onChange={handleChange}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="form-control text-secondary"
+            placeholder="Recipe Title"
+            required
+          />
+        </div>
+        <div className="mb-3 ">
+          <label className="form-label text-secondary">Ingredients</label>
+          <input
+            type="text"
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value)}
+            className="form-control text-secondary"
+            placeholder="types of ingrediants"
             required
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Ingredients (comma separated)</label>
-          <input
-            type="text"
-            className="form-control"
-            name="ingredients"
-            value={recipe.ingredients}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Instructions</label>
+          <label className="form-label text-secondary">Instructions</label>
           <textarea
-            className="form-control"
-            name="instructions"
-            value={recipe.instructions}
-            onChange={handleChange}
-            required
-          ></textarea>
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Cuisine</label>
-          <input
-            type="text"
-            className="form-control"
-            name="cuisine"
-            value={recipe.cuisine}
-            onChange={handleChange}
+            value={instructions}
+            onChange={(e) => setInstructions(e.target.value)}
+            className="form-control text-secondary"
+            placeholder="instructions"
+            rows="4"
             required
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Cooking Time (minutes)</label>
+          <label className="form-label text-secondary">Cuisine Type</label>
+          <input
+            type="text"
+            value={cuisineType}
+            onChange={(e) => setCuisineType(e.target.value)}
+            className="form-control text-secondary"
+            placeholder="Cuisine Type"
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label text-secondary">Cooking Time (in minutes)</label>
           <input
             type="number"
-            className="form-control"
-            name="cookingTime"
-            value={recipe.cookingTime}
-            onChange={handleChange}
+            value={cookingTime}
+            onChange={(e) => setCookingTime(e.target.value)}
+            className="form-control text-secondary " 
+            placeholder="Cooking Time"
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary">Create Recipe</button>
+        <div className="mb-3">
+          <label className="form-label text-secondary">Image</label>
+          <input
+            type="file"
+            onChange={(e) => setImage(e.target.files[0])}
+            className="form-control"
+          />
+        </div>
+        <button
+          type="submit"
+          className="btn btn-warning text-secondary w-100"
+        >
+          Create Recipe
+        </button>
       </form>
+    </div>
     </div>
   );
 };

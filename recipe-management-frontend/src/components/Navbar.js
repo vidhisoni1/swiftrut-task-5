@@ -2,40 +2,69 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
+    localStorage.removeItem('token'); // Remove token from localStorage
+    navigate('/login'); // Redirect to login page
   };
 
-  const isLoggedIn = !!localStorage.getItem('token'); // Check if token exists
-
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-info">
+    <nav className="navbar navbar-expand-lg navbar-light bg-warning shadow-sm">
       <div className="container">
-        <Link className="navbar-brand text-secondary"  to="/">Recipe Manager</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
+        {/* Brand Name */}
+        <Link className="navbar-brand text-secondary fw-bold" to="/">
+          RECIPES
+        </Link>
+        
+
+
+
+        {/* Navbar Links */}
+        <div className="" id="">
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link text-secondary" to="/">Home</Link>
-            </li>
-            {isLoggedIn ? (
+            {token && (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link text-secondary" to="/create-recipe">Create Recipe</Link>
+                  <Link className="nav-link text-secondary" to="/create">
+                    Create Recipe
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <button className="btn btn-link nav-link text-secondary" onClick={handleLogout}>Logout</button>
+                  <Link className="nav-link text-secondary" to="/my-recipes">
+                    Show My Recipes
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <button
+                    onClick={handleLogout}
+                    className="btn btn-danger ms-3"
+                  >
+                    Logout
+                  </button>
                 </li>
               </>
-            ) : (
-              <li className="nav-item ">
-                <Link className="nav-link text-secondary " to="/login">Login</Link>
-              </li>
+            )}
+            {!token && (
+              <>
+               
+                  <Link
+                    to="/login"
+                    className="nav-link text-secondary text-decoration-none"
+                  >
+                    Login
+                  </Link>
+                
+                
+                  <Link
+                    to="/register"
+                    className="btn   ms-3 btn-secondary text-warning" 
+                  >
+                    Register
+                  </Link>
+                
+              </>
             )}
           </ul>
         </div>
